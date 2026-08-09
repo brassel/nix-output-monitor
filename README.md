@@ -101,7 +101,7 @@ Nom tries to convey information via symbols and colors
 * `↓ ✔`, green: completed downloads
 * `↑ ✔`, green: completed uploads
 * `↓ ⏸`, blue: waiting downloads
-* `∅`: the mean duration of the 10 last builds of derivations with the same name after the hash
+* `∅`: the median duration of the 10 last builds of derivations with the same name after the hash
 * `⏱︎`: running time
 * `∑`: a summary over all packages and hosts
 
