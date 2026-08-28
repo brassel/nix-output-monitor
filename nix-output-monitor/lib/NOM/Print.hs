@@ -15,6 +15,7 @@ import Data.Tree (Forest, Tree (Node))
 import GHC.Records (HasField)
 import NOM.Builds (Derivation (..), FailType (..), Host (..), HostContext (..), StorePath (..), forgetProto)
 import NOM.NixMessage.JSON (ActivityId (..), ActivityProgress (..))
+import NOM.Print.ProgressBar (printProgressBar)
 import NOM.Print.Table (Entry, blue, bold, cells, displayWidth, dummy, green, grey, header, label, magenta, markup, markups, prependLines, printAlignedSep, red, text, yellow)
 import NOM.Print.Tree (showForest)
 import NOM.State (
@@ -392,7 +393,7 @@ printBuilds nomState@MkNOMState{..} hostAbbrevs limits = printBuildsWithTime
     rows <&> \(l, r) ->
       l
         <> stimes (max 0 $ left_width - displayWidth l) " "
-        <> maybe "" (\p -> printBar (limits.width - left_width - 6) p <> printPercent p) r
+        <> maybe "" (\p -> printProgressBar (limits.width - left_width - 6) p <> printPercent p) r
    where
     left_width = max 60 (1 + maximum1 (0 :| (displayWidth . fst <$> filter (isJust . snd) rows)))
   num_raw_roots = length forestRoots
@@ -652,19 +653,6 @@ printBuilds nomState@MkNOMState{..} hostAbbrevs limits = printBuildsWithTime
                    )
             , const Nothing
             )
-
--- Original implementation of this bar was shamelessly stolen from @ners at https://github.com/ners/rhine-nix/blob/main/app/Main.hs (Apache License)
-printBar :: Int -> Double -> Text
-printBar len part = toText bar
- where
-  pct :: Double
-  pct = part * intToDouble len
-  bar :: String
-  bar =
-    [1, 2 .. intToDouble len] <&> \case
-      ((<= pct + 0 / 2) -> True) -> '■'
-      ((<= pct + 1 / 2) -> True) -> '◧'
-      _ -> '□'
 
 printPercent :: Double -> Text
 printPercent = markup bold . fromString . printf "%5.1f%%" . (* 100)

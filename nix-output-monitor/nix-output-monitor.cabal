@@ -82,6 +82,7 @@ common common-config
     stm,
     streamly-core,
     strict,
+    template-haskell,
     terminal-size,
     text,
     time,
@@ -124,6 +125,8 @@ library
     NOM.Parser
     NOM.Parser.JSON
     NOM.Print
+    NOM.Print.ProgressBar
+    NOM.Print.ProgressBar.Char
     NOM.Print.Table
     NOM.Print.Tree
     NOM.State
@@ -182,6 +185,7 @@ test-suite integration-tests
 
 test-suite doc-tests
   import: tests
+  default-extensions: ImplicitPrelude
   build-depends: doctest-parallel
   hs-source-dirs: test
   type: exitcode-stdio-1.0

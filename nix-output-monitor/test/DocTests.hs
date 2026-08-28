@@ -1,6 +1,6 @@
 module Main (main) where
 
-import Relude
+import System.Environment (getArgs)
 import Test.DocTest (mainFromCabal)
 
 main :: IO ()
