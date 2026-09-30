@@ -229,7 +229,11 @@ stateToText config buildState@MkNOMState{..} = printWithSize
     showCond
       showBuilds
       [ yellow $ nonZeroBold running numRunningBuilds
-      , green $ nonZeroBold done numCompletedBuilds
+      , -- Completed builds are shown against the total known so far
+        -- (planned + running + completed + failed). The total may still
+        -- grow while evaluation discovers more work (IFD), so it is a
+        -- "known so far", not a promise.
+        green $ label done $ text (markup (if numCompletedBuilds > 0 then bold else id) (show numCompletedBuilds <> "/" <> show totalBuildsEver))
       , blue $ nonZeroBold todo numPlannedBuilds
       ]
       <> showCond
@@ -262,6 +266,7 @@ stateToText config buildState@MkNOMState{..} = printWithSize
   numCompletedBuilds = CMap.size completedBuilds
   numPlannedBuilds = CSet.size plannedBuilds
   totalBuilds = numPlannedBuilds + numRunningBuilds + numCompletedBuilds
+  totalBuildsEver = numPlannedBuilds + numRunningBuilds + numCompletedBuilds + numFailedBuilds
   downloadsDone = CMap.size completedDownloads
   downloadsRunning = CMap.size runningDownloads
   uploadsRunning = CMap.size runningUploads
